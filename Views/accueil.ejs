@@ -1,0 +1,110 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.2/css/bulma.min.css" integrity="sha512-RpeJZX3aH5oZN3U3JhE7Sd+HG8XQsqmP3clIbu4G28p668yNsRNj3zMASKe1ATjl/W80wuEtCx2dFA8xaebG5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Ma page</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      z-index: -99;
+      position: absolute;
+      padding: 0;
+      margin: 0;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .formulaire{
+      position: absolute;
+      right: 30px;
+      bottom: 30px;
+      color: rgb(0, 0, 0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(242, 238, 238);
+      z-index: -88;
+      height: 170px;
+      width: 250px;
+      text-align: center;
+      border-radius: 10px;
+    }
+    
+    .formulaire h1{
+      font-weight: 500;
+    }
+
+    .formulaire input{
+      margin: 15px 0;
+      padding: 10px;
+      font-size: 15px;
+      outline: none;
+      width: 170px;
+      height: 30px;
+      border-radius: 4px;
+      border: none;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/"></script>
+
+  <script>
+    require([
+     "esri/config",
+      "esri/Map",
+      "esri/views/MapView"
+    ],(esriConfig, Map, MapView)=> {
+
+      esriConfig.apiKey= "AAPTxy8BH1VEsoebNVZXo8HurMXFZFxfQy31X9IiJeRjps-hUQQPdaia96ad3TjAQKVEV8y95N-40f5dV8hJXxQxFTcHhG4OgOXeYxOyDWvQwN17sWm8i1eBi2rE5xZEGYUGk51AbZS70Nh4Tnjkn8AK94uS-FiwN08V8c-jryH81B-y-Nq8carQ3V2iTKIjZhys3EWEUv9-FRgMnIyxSLLrf9CzcxH3-mn3JQhCG55A8co.AT1_1KF8zRHF";
+      const map = new Map({
+        basemap: "arcgis/topographic" // Basemap layer
+      });
+      <% if (weatherData.length > 0) { %>
+       <% weatherData.forEach(element => { %>
+        const view = new MapView({
+          map: map,
+          center: [<%= weatherData[element].longitude %>, <%= weatherData[element].latitude %>],
+          zoom: 13, // scale: 72223.819286
+          container: "viewDiv",
+          constraints: {
+            snapToZoom: false
+          }
+        });
+            <% }); %>
+        <% } else { %>
+          const view = new MapView({
+          map: map,
+          center: [<%= long %>, <%= lat %>],
+          zoom: 13, // scale: 72223.819286
+          container: "viewDiv",
+          constraints: {
+            snapToZoom: false
+          }
+        });
+      <% } %>
+
+        });
+        </script>
+</head>
+
+<body>
+  <div id="viewDiv">
+  </div>
+
+    
+    <div class="formulaire">
+      <h1>The Weather Map App</h1>
+      <form action="getCity" method="post">
+        <input name="city" type="text" placeholder="Inserez une ville...">
+        <button class="button is-success">Chercher</button>
+      </form>
+    </div>
+    
+</body>
+
+</html>
