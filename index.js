@@ -28,15 +28,18 @@ app.get('/', (req, res) => {
 app.get('/accueil', (req, res) => { 
     const data = {
         long: 5.172575,
-        lat: 43.477005
+        lat: 43.477005,
     }
 
-    res.render('accueil', {weatherData: weatherData , data: data})
+    console.log(data);
+    
+
+    res.render('accueil', {data: data, weatherData: weatherData})
 })
 
 app.post('/getCity', async (req, res) => {
     const city = req.body.city
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
 
     try {
         const response = await fetch(url)
@@ -55,6 +58,7 @@ app.post('/getCity', async (req, res) => {
         weatherInfo.tempMin = data.main.temp_min;
         weatherInfo.tempMax = data.main.temp_max;
         weatherInfo.ressenti = data.main.feels_like
+        weatherInfo.city = city
         weatherData.push(weatherInfo)
 
     } catch (error) {
@@ -64,6 +68,10 @@ app.post('/getCity', async (req, res) => {
     res.redirect('accueil')
 })
 
+app.post('/deleteCard', (req, res) => {
+    weatherData.splice(req.body.sub, 1)
+    res.status(201).redirect('/accueil')
+})
 
 
 app.listen(port, () => {

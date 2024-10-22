@@ -9,29 +9,42 @@
     html,
     body,
     #viewDiv {
-      z-index: -99;
       position: absolute;
+      /* display: flex;
+      justify-content: center; */
       padding: 0;
       margin: 0;
       height: 100vh;
       width: 100%;
     }
 
+    .container{
+      position: relative;
+      max-height: 100vh;
+      overflow-y: auto;
+      /* display: flex; */
+      /* justify-content: center;
+      align-content: center;
+      align-items: center;
+      flex-direction: column; */
+      /* width: 20%; */
+      /* bottom: -50%; */
+      /* right: 0; */
+    }
+
     .formulaire{
-      position: absolute;
-      right: 30px;
-      bottom: 30px;
       color: rgb(0, 0, 0);
       display: flex;
+      padding: 10px 30px;
       flex-direction: column;
-      align-items: center;
+      align-content: center;
       justify-content: center;
-      background-color: rgb(242, 238, 238);
-      z-index: -88;
-      height: 170px;
-      width: 250px;
+      background-color: rgb(242, 238, 238);    
       text-align: center;
       border-radius: 10px;
+      width: 90%;
+      margin-bottom: 15px;
+      margin: 40px auto;
     }
     
     .formulaire h1{
@@ -48,6 +61,49 @@
       border-radius: 4px;
       border: none;
     }
+
+    .card{
+    color:  rgb(0, 0, 0); 
+    display: flex;
+    margin: auto;
+    padding: 10px 20px;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: rgb(242, 238, 238);
+    text-align: center;
+    border-radius: 10px;
+    width: 90%;
+}
+
+.card input{
+    position: absolute;
+    right: 10px;
+    color: white;
+    background: gray;
+    transition: 0.3s;
+}
+
+.card input:hover{
+    transform: translateY(1px);
+    background: white;
+    color: gray;
+}
+
+.card button.button{
+    position: relative;
+    top: -17px;
+    background: gray;
+    border: none;
+    transition: 0.3s;
+}
+.card button.button:hover{
+    transform: translateY(1px);
+    background: white;
+    color: gray;
+}
   </style>
 
   <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
@@ -64,29 +120,29 @@
       const map = new Map({
         basemap: "arcgis/topographic" // Basemap layer
       });
-      <% if (weatherData.length > 0) { %>
-       <% weatherData.forEach(element => { %>
-        const view = new MapView({
-          map: map,
-          center: [<%= weatherData[element].longitude %>, <%= weatherData[element].latitude %>],
-          zoom: 13, // scale: 72223.819286
-          container: "viewDiv",
-          constraints: {
-            snapToZoom: false
-          }
-        });
-            <% }); %>
-        <% } else { %>
+       
+       <% if(weatherData.length > 0) { %>
+            
+            const view = new MapView({
+              map: map,
+              center: [<%= weatherData[weatherData.length -1].longitude %>, <%= weatherData[weatherData.length -1].latitude %>], // 5.448528512.2554258  45.365875225.3698595
+              zoom: 13, // scale: 72223.819286
+              container: "viewDiv",
+              constraints: {
+                snapToZoom: false
+              }
+            });
+            <% } else { %>
           const view = new MapView({
           map: map,
-          center: [<%= long %>, <%= lat %>],
+          center: [<%= data.long %>, <%= data.lat %>],
           zoom: 13, // scale: 72223.819286
           container: "viewDiv",
           constraints: {
             snapToZoom: false
           }
         });
-      <% } %>
+      <% } %>;
 
         });
         </script>
@@ -94,16 +150,32 @@
 
 <body>
   <div id="viewDiv">
-  </div>
-
-    
-    <div class="formulaire">
-      <h1>The Weather Map App</h1>
-      <form action="getCity" method="post">
-        <input name="city" type="text" placeholder="Inserez une ville...">
-        <button class="button is-success">Chercher</button>
-      </form>
+    <div class="container">
+      <div class="formulaire">
+        <h1>The Weather Map App</h1>
+        <form action="getCity" method="post">
+          <input name="city" type="text" placeholder="Inserez une ville...">
+          <button class="button is-success">Chercher</button>
+        </form>
+      </div>
+      <% if(weatherData.length > 0) { %>
+        <% weatherData.forEach((element, id) => { %>
+      <div class="card">
+        <form action="/deleteCard" method="post">
+          <input name="input" type="submit" value="X" class="button is-danger is-small">
+          <input name="sub" type="hidden" value="<%= id %>" class="button is-danger">
+        </form>
+        <button class="button"> <%= element.city %> </button>
+        <h3>Temperature : <%= element.temperature %>° </h3>
+        <h3>Ressenti : <%= element.ressenti %>°</h3>
+        <h3>Minima : <%= element.tempMin %>°</h3>
+        <h3>Maximum : <%= element.tempMax %>°</h3>
+      </div>
+      <% }) %>
+      <% } %>
     </div>
+    
+  </div>
     
 </body>
 
